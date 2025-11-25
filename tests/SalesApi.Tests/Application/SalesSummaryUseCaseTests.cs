@@ -28,7 +28,8 @@ public sealed class SalesSummaryUseCaseTests
 
         var medianCalculator = new MedianCalculator();
         var dateRangeCalculator = new DateRangeCalculator();
-        var useCase = new SalesSummaryUseCase(new FakeDataSource(records), medianCalculator, dateRangeCalculator);
+        var regionAnalyzer = new RegionAnalyzer();
+        var useCase = new SalesSummaryUseCase(new FakeDataSource(records), medianCalculator, dateRangeCalculator, regionAnalyzer);
 
         // When
         var result = await useCase.ComputeSummaryAsync(Stream.Null);
@@ -47,7 +48,8 @@ public sealed class SalesSummaryUseCaseTests
         // Given
         var medianCalculator = new MedianCalculator();
         var dateRangeCalculator = new DateRangeCalculator();
-        var useCase = new SalesSummaryUseCase(new FakeDataSource([]), medianCalculator, dateRangeCalculator);
+        var regionsAnalyzer = new RegionAnalyzer();
+        var useCase = new SalesSummaryUseCase(new FakeDataSource([]), medianCalculator, dateRangeCalculator, regionsAnalyzer);
 
         // When / Then
         await Assert.ThrowsAsync<InvalidOperationException>(() => useCase.ComputeSummaryAsync(Stream.Null));

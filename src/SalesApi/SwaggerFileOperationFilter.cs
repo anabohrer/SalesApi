@@ -3,10 +3,20 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SalesApi;
 
+/// <summary>
+/// Swagger operation filter that configures file upload parameters for OpenAPI documentation.
+/// This filter converts IFormFile parameters to multipart/form-data binary uploads in the Swagger UI.
+/// </summary>
 public class SwaggerFileOperationFilter : IOperationFilter
 {
+    /// <summary>
+    /// Applies the filter to the OpenAPI operation, converting IFormFile parameters to proper file upload schema.
+    /// </summary>
+    /// <param name="operation">The OpenAPI operation to modify.</param>
+    /// <param name="context">The operation filter context containing API metadata.</param>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
+        // Find all parameters that are IFormFile types
         var fileParams = context.ApiDescription.ParameterDescriptions
             .Where(p => p.ModelMetadata?.ModelType == typeof(IFormFile))
             .ToList();
@@ -14,6 +24,8 @@ public class SwaggerFileOperationFilter : IOperationFilter
         if (!fileParams.Any())
             return;
 
+        // Remove IFormFile parameters from the default parameter list
+        // as they will be added to the request body instead
         if (operation.Parameters != null)
         {
             foreach (var fileParam in fileParams)
@@ -24,6 +36,7 @@ public class SwaggerFileOperationFilter : IOperationFilter
             }
         }
 
+        // Configure the request body as multipart/form-data with binary file uploads
         operation.RequestBody = new OpenApiRequestBody
         {
             Content = new Dictionary<string, OpenApiMediaType>

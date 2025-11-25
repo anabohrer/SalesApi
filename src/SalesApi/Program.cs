@@ -19,6 +19,7 @@ builder.Services.AddScoped<ISalesSummaryUseCase, SalesSummaryUseCase>();
 
 builder.Services.AddSingleton<IMedianCalculator, MedianCalculator>();
 builder.Services.AddSingleton<IDateRangeCalculator, DateRangeCalculator>();
+builder.Services.AddSingleton<IRegionAnalyzer, RegionAnalyzer>();
 
 var app = builder.Build();
 

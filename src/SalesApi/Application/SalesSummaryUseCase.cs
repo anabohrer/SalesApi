@@ -6,11 +6,13 @@ namespace SalesApi.Application;
 public sealed class SalesSummaryUseCase(
     ISalesDataSource salesDataSource,
     IMedianCalculator medianCalculator,
-    IDateRangeCalculator dateRangeCalculator) : ISalesSummaryUseCase
+    IDateRangeCalculator dateRangeCalculator,
+    IRegionAnalyzer regionAnalyzer) : ISalesSummaryUseCase
 {
     private readonly ISalesDataSource salesDataSource = salesDataSource;
     private readonly IMedianCalculator medianCalculator = medianCalculator;
     private readonly IDateRangeCalculator dateRangeCalculator = dateRangeCalculator;
+    private readonly IRegionAnalyzer regionAnalyzer = regionAnalyzer;
 
     public async Task<SummaryResult> ComputeSummaryAsync(Stream csvStream, CancellationToken cancellationToken = default)
     {
@@ -21,11 +23,7 @@ public sealed class SalesSummaryUseCase(
 
         var medianUnitCost = medianCalculator.ComputeMedian(records.Select(r => r.UnitCost));
 
-        var mostCommonRegion = records
-            .GroupBy(r => r.Region)
-            .OrderByDescending(g => g.Count())
-            .ThenBy(g => g.Key, StringComparer.Ordinal)
-            .First().Key;
+        var mostCommonRegion = regionAnalyzer.GetMostCommonRegion(records.Select(r => r.Region));
 
         var (first, last) = dateRangeCalculator.GetFirstAndLast(records.Select(r => r.OrderDate));
         var daysBetween = (int)(last - first).TotalDays;

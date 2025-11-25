@@ -7,6 +7,7 @@ namespace SalesApi.Controllers
     [ApiController]
     public sealed class SalesController(ISalesSummaryUseCase useCase) : ControllerBase
     {
+        private const string FileUploadErrorMessage = "Please upload a CSV file in form field 'file'.";
         private readonly ISalesSummaryUseCase useCase = useCase;
 
         [HttpPost("summary")]
@@ -16,7 +17,7 @@ namespace SalesApi.Controllers
         public async Task<IActionResult> UploadAndSummarize(IFormFile file, CancellationToken cancellationToken)
         {
             if (file == null || file.Length == 0)
-                return BadRequest("Please upload a CSV file in form field 'file'.");
+                return BadRequest(FileUploadErrorMessage);
 
             await using var stream = file.OpenReadStream();
             var result = await useCase.ComputeSummaryAsync(stream, cancellationToken);
