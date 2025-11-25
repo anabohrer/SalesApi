@@ -1,0 +1,35 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Properties - launch settings (developer-specific)
+**/Properties/launchSettings.json
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+
+# Coverage reports
+*.coverage
+*.coveragexml
