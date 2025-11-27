@@ -47,8 +47,11 @@ tests/SalesApi.Tests/
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - IDE: Visual Studio 2022, VS Code, or Rider
+- **Docker** (optional, for containerized deployment)
 
 ### Running the Application
+
+#### Option 1: Using .NET CLI
 
 ```bash
 # Clone the repository
@@ -66,14 +69,56 @@ dotnet run
 # Navigate to: https://localhost:7093/swagger
 ```
 
+#### Option 2: Using Docker
+
+```bash
+# Build the Docker image
+docker build -t salesapi:latest .
+
+# Run the container
+docker run -p 8080:8080 salesapi:latest
+
+# Or run in detached mode with a custom name
+docker run -d -p 8080:8080 --name salesapi salesapi:latest
+
+# Access the API
+# Navigate to: http://localhost:8080/swagger
+```
+
+**Docker Commands:**
+```bash
+# View running containers
+docker ps
+
+# View logs
+docker logs salesapi
+
+# Stop the container
+docker stop salesapi
+
+# Remove the container
+docker rm salesapi
+```
+
 ### Running Tests
 
 ```bash
-# Run all tests
+# Run all tests locally
 dotnet test
 
 # Run with coverage
 dotnet test --collect:"XPlat Code Coverage"
+
+# Run tests in Docker (with full output)
+docker build --no-cache --progress=plain --target test -t salesapi:test .
+
+# Run tests in Docker (cached, faster)
+docker build --target test -t salesapi:test .
+
+# Extract test results from Docker
+docker create --name temp-test salesapi:test
+docker cp temp-test:/testresults ./test-results
+docker rm temp-test
 ```
 
 ## API Endpoints
